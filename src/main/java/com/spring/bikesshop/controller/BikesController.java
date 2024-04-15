@@ -29,6 +29,8 @@ public class BikesController {
 		this.shopRepository = shopRepository;
 	}
 
+	//-------------- Métodos peticiones Consultar --------------//
+	
 	@GetMapping("/bikes")
 	public ResponseEntity<List<BikeDTO>> getAllBikes() {
 		List<Bike> bikes = bikeRepository.findAll();
@@ -43,6 +45,8 @@ public class BikesController {
 		BikeDTO bikeDTO = convertToDTO(bike);
 		return ResponseEntity.ok(bikeDTO);
 	}
+	
+	//-------------- Métodos peticiones Insertar --------------//
 
 	@PostMapping("/bikes")
 	public ResponseEntity<BikeDTO> createBike(@RequestBody BikeDTO bikeDTO) {
@@ -72,6 +76,8 @@ public class BikesController {
 	 * guardada.
 	 */
 
+	//-------------- Métodos peticiones Modificar --------------//
+	
 	@PutMapping("/bikes/{id}")
 	public ResponseEntity<BikeDTO> updateBike(@PathVariable Long id, @RequestBody BikeDTO updatedBikeDTO) {
 		// Buscar la bicicleta por ID
@@ -91,6 +97,8 @@ public class BikesController {
 		return ResponseEntity.ok(BikeConvertTo.convertToDTO(savedBike));
 	}
 
+	//-------------- Métodos peticiones Borrar --------------//
+	
 	@DeleteMapping("/bikes/{id}")
 	public ResponseEntity<Void> deleteBike(@PathVariable Long id) {
 		if (bikeRepository.existsById(id)) {
@@ -101,6 +109,7 @@ public class BikesController {
 		}
 	}
 
+	
 	// Método para convertir una Bike a BikeDTO
 	private BikeDTO convertToDTO(Bike bike) {
 		BikeDTO bikeDTO = new BikeDTO();

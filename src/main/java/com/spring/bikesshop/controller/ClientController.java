@@ -23,6 +23,8 @@ public class ClientController {
 		this.clientRepository = clientRepository;
 	}
 
+	// -------------- Métodos peticiones Consultar --------------//
+
 	@GetMapping("/clients")
 	public ResponseEntity<List<ClientDTO>> getAllClients() {
 		List<Client> clients = clientRepository.findAll();
@@ -37,6 +39,20 @@ public class ClientController {
 		return ResponseEntity.ok(ClientConvertTo.convertToDTO(client));
 	}
 
+	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la respuesta completa
+	@RequestMapping(value = "/clients/{id}", method = RequestMethod.HEAD)
+	public ResponseEntity<Void> getClientMetadata(@PathVariable Long id) {
+		if (clientRepository.existsById(id)) {
+			// Si el cliente existe, retornar una respuesta exitosa sin contenido
+			return ResponseEntity.ok().build();
+		} else {
+			// Si el cliente no existe, retornar una respuesta 404 (Not Found)
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// -------------- Métodos peticiones Insertar --------------//
+
 	@PostMapping("/clients")
 	public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
 		Client client = ClientConvertTo.convertToEntity(clientDTO);
@@ -44,17 +60,40 @@ public class ClientController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ClientConvertTo.convertToDTO(savedClient));
 	}
 
+	// -------------- Métodos peticiones Modificar --------------//
+
+	// Petición para modificar cliente
 	@PutMapping("/clients/{id}")
 	public ResponseEntity<ClientDTO> updateClient(@PathVariable Long id, @RequestBody ClientDTO updatedClientDTO) {
+		// Busca cliente por id para guardarlo en un objeto cliente
 		Optional<Client> clientOptional = clientRepository.findById(id);
 		Client client = clientOptional
 				.orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + id));
+		// Guarda los atributos que se pasan en el cuerpo de la petición
 		client.setName(updatedClientDTO.getName());
 		client.setAddress(updatedClientDTO.getAddress());
 		client.setAge(updatedClientDTO.getAge());
+		// Guarda el cliente modificado y y convierte en DTO para enviar los datos a la
+		// respuesta
 		Client savedClient = clientRepository.save(client);
 		return ResponseEntity.ok(ClientConvertTo.convertToDTO(savedClient));
 	}
+
+	// Método para actualizar solo el nombre de un cliente
+	@PatchMapping("/clients/{id}/updateName")
+	public ResponseEntity<ClientDTO> updateClientName(@PathVariable Long id, @RequestBody String newName) {
+		Optional<Client> clientOptional = clientRepository.findById(id);
+		Client client = clientOptional
+				.orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + id));
+		// Actualizar solo el nombre del cliente
+		client.setName(newName);
+		// Guardar el cliente actualizado en la base de datos
+		Client savedClient = clientRepository.save(client);
+		// Retornar el cliente actualizado en formato DTO
+		return ResponseEntity.ok(ClientConvertTo.convertToDTO(savedClient));
+	}
+
+	// -------------- Métodos peticiones Borrar --------------//
 
 	@DeleteMapping("/clients/{id}")
 	public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
