@@ -7,7 +7,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+
 
 @Entity @Data
 public class Bike {
@@ -15,8 +18,11 @@ public class Bike {
 	@Id
 	@GeneratedValue
 	private Long id;
+	@NotNull(message = "Name is required")
+    @Size(min = 3, message = "Title must be at least 3 characters long")
 	private String name;
-	private String marca;
+	@NotNull(message = "Brand is required")
+	private String brand;
 	
 	@ManyToOne
 	@JoinColumn(name="idShop")
@@ -24,9 +30,9 @@ public class Bike {
 	
 	public Bike () {}
 
-	public Bike(String name, String marca, Shop shop) {
+	public Bike(String name, String brand, Shop shop) {
 		this.name = name;
-		this.marca = marca;
+		this.brand = brand;
 		this.shop = shop;
 	}
 
@@ -46,12 +52,12 @@ public class Bike {
 		this.name = name;
 	}
 
-	public String getMarca() {
-		return marca;
+	public String getBrand() {
+		return brand;
 	}
 
-	public void setMarca(String marca) {
-		this.marca = marca;
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 
 	public Shop getShop() {
@@ -64,7 +70,7 @@ public class Bike {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, marca, name, shop);
+		return Objects.hash(id, brand, name, shop);
 	}
 
 	@Override
@@ -76,13 +82,13 @@ public class Bike {
 		if (getClass() != obj.getClass())
 			return false;
 		Bike other = (Bike) obj;
-		return Objects.equals(id, other.id) && Objects.equals(marca, other.marca) && Objects.equals(name, other.name)
+		return Objects.equals(id, other.id) && Objects.equals(brand, other.brand) && Objects.equals(name, other.name)
 				&& Objects.equals(shop, other.shop);
 	}
 
 	@Override
 	public String toString() {
-		return "Bike [id=" + id + ", name=" + name + ", marca=" + marca + ", shop=" + shop + "]";
+		return "Bike [id=" + id + ", name=" + name + ", brand=" + brand + ", shop=" + shop + "]";
 	}
 
 }

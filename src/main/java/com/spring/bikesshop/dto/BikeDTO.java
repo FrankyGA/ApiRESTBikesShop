@@ -4,14 +4,14 @@ public class BikeDTO {
 
 	private Long id;
 	private String name;
-	private String marca;
+	private String brand;
 	private String shop;
 	
 	public BikeDTO () {}
 
-	public BikeDTO(String name, String marca, String shop) {
+	public BikeDTO(String name, String brand, String shop) {
 		this.name = name;
-		this.marca = marca;
+		this.brand = brand;
 		this.shop = shop;
 	}
 
@@ -31,12 +31,12 @@ public class BikeDTO {
 		this.name = name;
 	}
 
-	public String getMarca() {
-		return marca;
+	public String getBrand() {
+		return brand;
 	}
 
-	public void setMarca(String marca) {
-		this.marca = marca;
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 
 	public String getShop() {

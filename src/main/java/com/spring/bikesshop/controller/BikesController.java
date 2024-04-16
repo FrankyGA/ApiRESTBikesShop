@@ -3,8 +3,10 @@ package com.spring.bikesshop.controller;
 import com.spring.bikesshop.converter.BikeConvertTo;
 import com.spring.bikesshop.converter.ClientConvertTo;
 import com.spring.bikesshop.dto.BikeDTO;
+import com.spring.bikesshop.dto.ClientDTO;
 import com.spring.bikesshop.exceptions.ResourceNotFoundException;
 import com.spring.bikesshop.model.Bike;
+import com.spring.bikesshop.model.Client;
 import com.spring.bikesshop.model.Shop;
 import com.spring.bikesshop.repository.BikeRepository;
 import com.spring.bikesshop.repository.ShopRepository;
@@ -29,8 +31,8 @@ public class BikesController {
 		this.shopRepository = shopRepository;
 	}
 
-	//-------------- Métodos peticiones Consultar --------------//
-	
+	// -------------- Métodos peticiones Consultar --------------//
+
 	@GetMapping("/bikes")
 	public ResponseEntity<List<BikeDTO>> getAllBikes() {
 		List<Bike> bikes = bikeRepository.findAll();
@@ -45,8 +47,21 @@ public class BikesController {
 		BikeDTO bikeDTO = convertToDTO(bike);
 		return ResponseEntity.ok(bikeDTO);
 	}
-	
-	//-------------- Métodos peticiones Insertar --------------//
+
+	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la
+	// respuesta completa
+	@RequestMapping(value = "/bikes/{id}", method = RequestMethod.HEAD)
+	public ResponseEntity<Void> getBikeMetadata(@PathVariable Long id) {
+		if (bikeRepository.existsById(id)) {
+			// Si la bici existe, retornar una respuesta exitosa sin contenido
+			return ResponseEntity.ok().build();
+		} else {
+			// Si el cliente no existe, retornar una respuesta 404 (Not Found)
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// -------------- Métodos peticiones Insertar --------------//
 
 	@PostMapping("/bikes")
 	public ResponseEntity<BikeDTO> createBike(@RequestBody BikeDTO bikeDTO) {
@@ -54,7 +69,7 @@ public class BikesController {
 		Shop shop = shopRepository.findByName(bikeDTO.getShop())
 				.orElseThrow(() -> new ResourceNotFoundException("Shop not found with name: " + bikeDTO.getShop()));
 		// Crear una nueva bicicleta con los datos del post
-		Bike bike = new Bike(bikeDTO.getName(), bikeDTO.getMarca(), shop);
+		Bike bike = new Bike(bikeDTO.getName(), bikeDTO.getBrand(), shop);
 		// Guardar la bicicleta en la base de datos
 		Bike savedBike = bikeRepository.save(bike);
 		// Convertir la bicicleta guardada a DTO
@@ -76,8 +91,8 @@ public class BikesController {
 	 * guardada.
 	 */
 
-	//-------------- Métodos peticiones Modificar --------------//
-	
+	// -------------- Métodos peticiones Modificar --------------//
+
 	@PutMapping("/bikes/{id}")
 	public ResponseEntity<BikeDTO> updateBike(@PathVariable Long id, @RequestBody BikeDTO updatedBikeDTO) {
 		// Buscar la bicicleta por ID
@@ -89,7 +104,7 @@ public class BikesController {
 		// Si se ha encontrado la bici
 		// Actualizar los atributos de la bicicleta con los datos actualizados
 		bike.setName(updatedBikeDTO.getName());
-		bike.setMarca(updatedBikeDTO.getMarca());
+		bike.setBrand(updatedBikeDTO.getBrand());
 		bike.setShop(shop);
 		// Guardar la bicicleta actualizada en la base de datos
 		Bike savedBike = bikeRepository.save(bike);
@@ -97,8 +112,21 @@ public class BikesController {
 		return ResponseEntity.ok(BikeConvertTo.convertToDTO(savedBike));
 	}
 
-	//-------------- Métodos peticiones Borrar --------------//
-	
+	// Método para actualizar solo el nombre de una bici
+	@PatchMapping("/bikes/{id}/updateName")
+	public ResponseEntity<BikeDTO> updateBikeName(@PathVariable Long id, @RequestBody String newName) {
+		Optional<Bike> bikeOptional = bikeRepository.findById(id);
+		Bike bike = bikeOptional.orElseThrow(() -> new ResourceNotFoundException("Bike not found with id: " + id));
+		// Actualizar solo el nombre de la bici
+		bike.setName(newName);
+		// Guardar la bici actualizado en la base de datos
+		Bike savedBike = bikeRepository.save(bike);
+		// Retornar la bici actualizada en formato DTO
+		return ResponseEntity.ok(BikeConvertTo.convertToDTO(savedBike));
+	}
+
+	// -------------- Métodos peticiones Borrar --------------//
+
 	@DeleteMapping("/bikes/{id}")
 	public ResponseEntity<Void> deleteBike(@PathVariable Long id) {
 		if (bikeRepository.existsById(id)) {
@@ -109,13 +137,12 @@ public class BikesController {
 		}
 	}
 
-	
 	// Método para convertir una Bike a BikeDTO
 	private BikeDTO convertToDTO(Bike bike) {
 		BikeDTO bikeDTO = new BikeDTO();
 		bikeDTO.setId(bike.getId());
 		bikeDTO.setName(bike.getName());
-		bikeDTO.setMarca(bike.getMarca());
+		bikeDTO.setBrand(bike.getBrand());
 		bikeDTO.setShop(bike.getShop().getName()); // Obtener el nombre de la tienda asociada
 		return bikeDTO;
 	}

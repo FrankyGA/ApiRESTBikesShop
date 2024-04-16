@@ -1,6 +1,8 @@
 package com.spring.bikesshop.controller;
 
+import com.spring.bikesshop.converter.BikeConvertTo;
 import com.spring.bikesshop.converter.ShopConvertTo;
+import com.spring.bikesshop.dto.BikeDTO;
 import com.spring.bikesshop.dto.ShopDTO;
 import com.spring.bikesshop.exceptions.ResourceNotFoundException;
 import com.spring.bikesshop.model.Bike;
@@ -41,6 +43,19 @@ public class ShopController {
 		return ResponseEntity.ok(ShopConvertTo.convertToDTO(shop));
 	}
 
+	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la
+	// respuesta completa
+	@RequestMapping(value = "/shops/{id}", method = RequestMethod.HEAD)
+	public ResponseEntity<Void> getShopMetadata(@PathVariable Long id) {
+		if (shopRepository.existsById(id)) {
+			// Si la tienda existe, retornar una respuesta exitosa sin contenido
+			return ResponseEntity.ok().build();
+		} else {
+			// Si el cliente no existe, retornar una respuesta 404 (Not Found)
+			return ResponseEntity.notFound().build();
+		}
+	}
+
 	// -------------- Métodos peticiones Insertar --------------//
 
 	@PostMapping("/shops")
@@ -49,8 +64,8 @@ public class ShopController {
 		Shop savedShop = shopRepository.save(shop);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ShopConvertTo.convertToDTO(savedShop));
 	}
-	
-	//-------------- Métodos peticiones Modificar --------------//
+
+	// -------------- Métodos peticiones Modificar --------------//
 
 	@PutMapping("/shops/{id}")
 	public ResponseEntity<ShopDTO> updateShop(@PathVariable Long id, @RequestBody ShopDTO updatedShopDTO) {
@@ -62,7 +77,20 @@ public class ShopController {
 		return ResponseEntity.ok(ShopConvertTo.convertToDTO(savedShop));
 	}
 	
-	//-------------- Métodos peticiones Borrar --------------//
+	// Método para actualizar solo el nombre de una tienda
+		@PatchMapping("/shops/{id}/updateName")
+		public ResponseEntity<ShopDTO> updateShopName(@PathVariable Long id, @RequestBody String newName) {
+			Optional<Shop> shopOptional = shopRepository.findById(id);
+			Shop shop = shopOptional.orElseThrow(() -> new ResourceNotFoundException("Shop not found with id: " + id));
+			// Actualizar solo el nombre de la tienda
+			shop.setName(newName);
+			// Guardar la tienda actualizado en la base de datos
+			Shop savedShop = shopRepository.save(shop);
+			// Retornar la tienda actualizada en formato DTO
+			return ResponseEntity.ok(ShopConvertTo.convertToDTO(savedShop));
+		}
+
+	// -------------- Métodos peticiones Borrar --------------//
 
 	@DeleteMapping("/shops/{id}")
 	public ResponseEntity<Void> deleteShop(@PathVariable Long id) {

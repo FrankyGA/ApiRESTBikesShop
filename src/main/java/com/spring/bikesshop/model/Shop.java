@@ -5,6 +5,8 @@ import java.util.Objects;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity @Data
@@ -13,7 +15,10 @@ public class Shop {
 	@Id
 	@GeneratedValue
 	private Long id;
+	@NotNull(message = "Name is required")
+    @Size(min = 3, message = "Title must be at least 3 characters long")
 	private String name;
+	@NotNull(message = "Address is required")
 	private String address;
 	
 	public Shop () {}
