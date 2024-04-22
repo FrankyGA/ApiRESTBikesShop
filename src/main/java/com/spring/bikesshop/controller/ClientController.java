@@ -5,6 +5,15 @@ import com.spring.bikesshop.dto.ClientDTO;
 import com.spring.bikesshop.exceptions.ResourceNotFoundException;
 import com.spring.bikesshop.model.Client;
 import com.spring.bikesshop.repository.ClientRepository;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "Client", description = "Client controller with CRUD Operations")
 public class ClientController {
 
 	private final ClientRepository clientRepository;
@@ -24,13 +34,31 @@ public class ClientController {
 	}
 
 	// -------------- Métodos peticiones Consultar --------------//
+	
+	// -------------- Petición todos los clientes --------------//
 
+	@Operation(summary = "Get all clients", description = "Get a list of all clients")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Clients found, retrieved clients", content = {
+            		@Content(mediaType = "application/json",
+            				array = @ArraySchema(schema = @Schema(implementation = Client.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Clients not found")
+    })
 	@GetMapping("/clients")
 	public ResponseEntity<List<ClientDTO>> getAllClients() {
 		List<Client> clients = clientRepository.findAll();
 		return ResponseEntity.ok(ClientConvertTo.convertToDTOList(clients));
 	}
 
+	// -------------- Petición cliente por ID --------------//
+	
+	@Operation(summary = "Get client by ID", description = "Get a client by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client found", content = {
+            		@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Client not found")
+    })
 	@GetMapping("/clients/{id}")
 	public ResponseEntity<ClientDTO> getClientById(@PathVariable Long id) {
 		Optional<Client> clientOptional = clientRepository.findById(id);
@@ -39,7 +67,15 @@ public class ClientController {
 		return ResponseEntity.ok(ClientConvertTo.convertToDTO(client));
 	}
 
-	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la respuesta completa
+	// -------------- Petición HEAD --------------//
+	
+	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la
+	// respuesta completa
+	@Operation(summary = "Check if client exists", description = "Check if a client exists by ID without retrieving full response body")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client found"),
+            @ApiResponse(responseCode = "404", description = "Client not found")
+    })
 	@RequestMapping(value = "/clients/{id}", method = RequestMethod.HEAD)
 	public ResponseEntity<Void> getClientMetadata(@PathVariable Long id) {
 		if (clientRepository.existsById(id)) {
@@ -52,7 +88,14 @@ public class ClientController {
 	}
 
 	// -------------- Métodos peticiones Insertar --------------//
+	
 
+	// Petición para insertar nuevo cliente
+	@Operation(summary = "Create a new client", description = "Create a new client")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Client created"),
+            @ApiResponse(responseCode = "400", description = "Invalid client data provided")
+    })
 	@PostMapping("/clients")
 	public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
 		Client client = ClientConvertTo.convertToEntity(clientDTO);
@@ -61,8 +104,15 @@ public class ClientController {
 	}
 
 	// -------------- Métodos peticiones Modificar --------------//
+	
+	// -------------- Petición modificación total cliente --------------//
 
 	// Petición para modificar cliente
+	@Operation(summary = "Update client by ID", description = "Update an existing client by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client updated"),
+            @ApiResponse(responseCode = "404", description = "Client not found")
+    })
 	@PutMapping("/clients/{id}")
 	public ResponseEntity<ClientDTO> updateClient(@PathVariable Long id, @RequestBody ClientDTO updatedClientDTO) {
 		// Busca cliente por id para guardarlo en un objeto cliente
@@ -79,7 +129,14 @@ public class ClientController {
 		return ResponseEntity.ok(ClientConvertTo.convertToDTO(savedClient));
 	}
 
+	// -------------- Petición modificación de atributo cliente --------------//
+	
 	// Método para actualizar solo el nombre de un cliente
+	@Operation(summary = "Update client name by ID", description = "Update the name of an existing client by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client name updated"),
+            @ApiResponse(responseCode = "404", description = "Client not found")
+    })
 	@PatchMapping("/clients/{id}/updateName")
 	public ResponseEntity<ClientDTO> updateClientName(@PathVariable Long id, @RequestBody String newName) {
 		Optional<Client> clientOptional = clientRepository.findById(id);
@@ -95,6 +152,11 @@ public class ClientController {
 
 	// -------------- Métodos peticiones Borrar --------------//
 
+	@Operation(summary = "Delete client by ID", description = "Delete a client by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Client deleted"),
+            @ApiResponse(responseCode = "404", description = "Client not found")
+    })
 	@DeleteMapping("/clients/{id}")
 	public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
 		if (clientRepository.existsById(id)) {

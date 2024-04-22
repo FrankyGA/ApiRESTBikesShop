@@ -1,15 +1,21 @@
 package com.spring.bikesshop.controller;
 
 import com.spring.bikesshop.converter.BikeConvertTo;
-import com.spring.bikesshop.converter.ClientConvertTo;
 import com.spring.bikesshop.dto.BikeDTO;
-import com.spring.bikesshop.dto.ClientDTO;
 import com.spring.bikesshop.exceptions.ResourceNotFoundException;
 import com.spring.bikesshop.model.Bike;
-import com.spring.bikesshop.model.Client;
 import com.spring.bikesshop.model.Shop;
 import com.spring.bikesshop.repository.BikeRepository;
 import com.spring.bikesshop.repository.ShopRepository;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@Tag(name = "Bikes", description = "Bikes controller with CRUD Operations")
 public class BikesController {
 
 	private final BikeRepository bikeRepository;
@@ -32,14 +39,32 @@ public class BikesController {
 	}
 
 	// -------------- Métodos peticiones Consultar --------------//
-
+	
+	// -------------- Petición todos las bicis --------------//
+	
+	@Operation(summary = "Get all bikes", description = "Get a list of all bikes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bikes found", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "404", description = "No bikes found")
+    })
 	@GetMapping("/bikes")
 	public ResponseEntity<List<BikeDTO>> getAllBikes() {
 		List<Bike> bikes = bikeRepository.findAll();
 		List<BikeDTO> bikeDTOs = bikes.stream().map(this::convertToDTO).collect(Collectors.toList());
 		return ResponseEntity.ok(bikeDTOs);
 	}
+	
+	// -------------- Petición bici por ID --------------//
 
+	@Operation(summary = "Get bike by ID", description = "Get a bike by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bike found", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "404", description = "Bike not found")
+    })
 	@GetMapping("/bikes/{id}")
 	public ResponseEntity<BikeDTO> getBikeById(@PathVariable Long id) {
 		Optional<Bike> bikeOptional = bikeRepository.findById(id);
@@ -48,6 +73,13 @@ public class BikesController {
 		return ResponseEntity.ok(bikeDTO);
 	}
 
+	// -------------- Petición HEAD --------------//
+	
+	@Operation(summary = "Check if bike exists", description = "Check if a bike exists by ID without retrieving full response body")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bike found"),
+            @ApiResponse(responseCode = "404", description = "Bike not found")
+    })
 	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la
 	// respuesta completa
 	@RequestMapping(value = "/bikes/{id}", method = RequestMethod.HEAD)
@@ -62,7 +94,14 @@ public class BikesController {
 	}
 
 	// -------------- Métodos peticiones Insertar --------------//
-
+	
+	@Operation(summary = "Create a new bike", description = "Create a new bike")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Bike created", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "404", description = "Shop not found")
+    })
 	@PostMapping("/bikes")
 	public ResponseEntity<BikeDTO> createBike(@RequestBody BikeDTO bikeDTO) {
 		// Buscar la tienda por nombre
@@ -92,7 +131,16 @@ public class BikesController {
 	 */
 
 	// -------------- Métodos peticiones Modificar --------------//
+	
+	// -------------- Petición modificación total bici --------------//
 
+	@Operation(summary = "Update bike by ID", description = "Update an existing bike by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bike updated", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "404", description = "Bike not found or shop not found")
+    })
 	@PutMapping("/bikes/{id}")
 	public ResponseEntity<BikeDTO> updateBike(@PathVariable Long id, @RequestBody BikeDTO updatedBikeDTO) {
 		// Buscar la bicicleta por ID
@@ -111,7 +159,16 @@ public class BikesController {
 		// Convertir la bicicleta guardada a DTO y retornarla en la respuesta
 		return ResponseEntity.ok(BikeConvertTo.convertToDTO(savedBike));
 	}
+	
+	// -------------- Petición modificación de atributo bici --------------//
 
+	@Operation(summary = "Update bike name by ID", description = "Update the name of an existing bike by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Bike name updated", content = {
+                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "404", description = "Bike not found")
+    })
 	// Método para actualizar solo el nombre de una bici
 	@PatchMapping("/bikes/{id}/updateName")
 	public ResponseEntity<BikeDTO> updateBikeName(@PathVariable Long id, @RequestBody String newName) {
@@ -127,6 +184,11 @@ public class BikesController {
 
 	// -------------- Métodos peticiones Borrar --------------//
 
+	@Operation(summary = "Delete bike by ID", description = "Delete a bike by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Bike deleted"),
+            @ApiResponse(responseCode = "404", description = "Bike not found")
+    })
 	@DeleteMapping("/bikes/{id}")
 	public ResponseEntity<Void> deleteBike(@PathVariable Long id) {
 		if (bikeRepository.existsById(id)) {

@@ -8,6 +8,15 @@ import com.spring.bikesshop.exceptions.ResourceNotFoundException;
 import com.spring.bikesshop.model.Bike;
 import com.spring.bikesshop.model.Shop;
 import com.spring.bikesshop.repository.ShopRepository;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +37,8 @@ public class ShopController {
 	}
 
 	// -------------- Métodos peticiones Consultar --------------//
+	
+	// -------------- Petición todos las tiendas --------------//
 
 	@GetMapping("/shops")
 	public ResponseEntity<List<ShopDTO>> getAllShops() {
@@ -35,6 +46,8 @@ public class ShopController {
 		List<ShopDTO> shopDTOs = shops.stream().map(ShopConvertTo::convertToDTO).collect(Collectors.toList());
 		return ResponseEntity.ok(shopDTOs);
 	}
+	
+	// -------------- Petición tienda por ID --------------//
 
 	@GetMapping("/shops/{id}")
 	public ResponseEntity<ShopDTO> getShopById(@PathVariable Long id) {
@@ -42,6 +55,8 @@ public class ShopController {
 		Shop shop = shopOptional.orElseThrow(() -> new ResourceNotFoundException("Shop not found with id: " + id));
 		return ResponseEntity.ok(ShopConvertTo.convertToDTO(shop));
 	}
+	
+	// -------------- Petición HEAD --------------//
 
 	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la
 	// respuesta completa
@@ -66,6 +81,8 @@ public class ShopController {
 	}
 
 	// -------------- Métodos peticiones Modificar --------------//
+	
+	// -------------- Petición modificación total tienda --------------//
 
 	@PutMapping("/shops/{id}")
 	public ResponseEntity<ShopDTO> updateShop(@PathVariable Long id, @RequestBody ShopDTO updatedShopDTO) {
@@ -76,6 +93,8 @@ public class ShopController {
 		Shop savedShop = shopRepository.save(shop);
 		return ResponseEntity.ok(ShopConvertTo.convertToDTO(savedShop));
 	}
+	
+	// -------------- Petición modificación de atributo tienda --------------//
 	
 	// Método para actualizar solo el nombre de una tienda
 		@PatchMapping("/shops/{id}/updateName")

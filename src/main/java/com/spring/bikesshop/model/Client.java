@@ -2,6 +2,7 @@ package com.spring.bikesshop.model;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -14,12 +15,16 @@ public class Client {
 
 	@Id
 	@GeneratedValue
+	@Schema(example = "1", description = "ID for client")
 	private Long id;
 	@NotNull(message = "Name is required")
     @Size(min = 3, message = "Title must be at least 3 characters long")
+	@Schema(example = "Alan", description = "Name for client")
 	private String name;
 	@NotNull(message = "Address is required")
+	@Schema(example = "Street river west, 4", description = "Address for client")
 	private String address;
+	@Schema(example = "25", description = "Age for client")
 	private String age;
 
 	public Client() {}
