@@ -175,20 +175,20 @@ public class ClientController {
 }
 
 /*
- * ---------------------Sin DTO ni excepciones --------------------- //
- * Constructor que inyecta ClientRepository mediante autowiring
- * 
- * @Autowired public ClientController(ClientRepository clientRepository) {
- * this.clientRepository = clientRepository; }
- * 
- * // Petición GET para consultar todos los clientes
- * 
- * @GetMapping("/clients") public ResponseEntity<List<Client>> getAllClients() {
- * List<Client> clients = clientRepository.findAll(); return
- * ResponseEntity.ok(clients); // Devuelve lista de clientes y estado 200 (OK) }
- * 
- * // Petición GET para consultar un cliente por su ID
- * 
+  ---------------------Sin DTO ni excepciones --------------------- //
+  Constructor que inyecta ClientRepository mediante autowiring
+  
+  @Autowired public ClientController(ClientRepository clientRepository) {
+  this.clientRepository = clientRepository; }
+  
+  // Petición GET para consultar todos los clientes
+  
+  @GetMapping("/clients") public ResponseEntity<List<Client>> getAllClients() {
+  List<Client> clients = clientRepository.findAll(); return
+  ResponseEntity.ok(clients); // Devuelve lista de clientes y estado 200 (OK) }
+  
+  // Petición GET para consultar un cliente por su ID
+  
  * @GetMapping("/clients/{id}") public ResponseEntity<Client>
  * getClientById(@PathVariable Long id) { Optional<Client> clientOptional =
  * clientRepository.findById(id); // Optional para evitar la devolución de null,

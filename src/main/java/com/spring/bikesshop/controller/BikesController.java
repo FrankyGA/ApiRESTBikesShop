@@ -51,10 +51,12 @@ public class BikesController {
     })
 	@GetMapping("/bikes")
 	public ResponseEntity<List<BikeDTO>> getAllBikes() {
+		// Guarda todos los registros en un arraylist, si no hay registros lanza excepcion
 		List<Bike> bikes = bikeRepository.findAll();
 		if (bikes.isEmpty()) {
             throw new ResourceNotFoundException("No bikes found");
         }
+		// Convierte los registros a objetos DTO para devolverlos en la respuesta
 		List<BikeDTO> bikeDTOs = bikes.stream().map(this::convertToDTO).collect(Collectors.toList());
 		return ResponseEntity.ok(bikeDTOs);
 	}
@@ -194,9 +196,11 @@ public class BikesController {
     })
 	@DeleteMapping("/bikes/{id}")
 	public ResponseEntity<Void> deleteBike(@PathVariable Long id) {
+		// Comprueba si existe en la BD y lo borra, devuelve cuerpo vacio en la respuesta al borrarlo 
 		if (bikeRepository.existsById(id)) {
 			bikeRepository.deleteById(id);
 			return ResponseEntity.noContent().build();
+		//Si no existe manda una excepcion
 		} else {
 			throw new ResourceNotFoundException("Bike not found with id: " + id);
 		}
