@@ -5,7 +5,9 @@ import com.spring.bikesshop.converter.ShopConvertTo;
 import com.spring.bikesshop.dto.BikeDTO;
 import com.spring.bikesshop.dto.ShopDTO;
 import com.spring.bikesshop.exceptions.ResourceNotFoundException;
+import com.spring.bikesshop.exceptions.ValidationException;
 import com.spring.bikesshop.model.Bike;
+import com.spring.bikesshop.model.Client;
 import com.spring.bikesshop.model.Shop;
 import com.spring.bikesshop.repository.ShopRepository;
 
@@ -40,15 +42,32 @@ public class ShopController {
 	
 	// -------------- Petición todos las tiendas --------------//
 
+	@Operation(summary = "Get all shops", description = "Get a list of all shops")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shops found, retrieved shops", content = {
+            		@Content(mediaType = "application/json",
+            				array = @ArraySchema(schema = @Schema(implementation = Shop.class)))
+            }),
+            @ApiResponse(responseCode = "404", description = "Shops not found")
+    })
 	@GetMapping("/shops")
 	public ResponseEntity<List<ShopDTO>> getAllShops() {
 		List<Shop> shops = shopRepository.findAll();
+		if (shops.isEmpty()) {
+            throw new ResourceNotFoundException("No shops found");
+        }
 		List<ShopDTO> shopDTOs = shops.stream().map(ShopConvertTo::convertToDTO).collect(Collectors.toList());
 		return ResponseEntity.ok(shopDTOs);
 	}
 	
 	// -------------- Petición tienda por ID --------------//
 
+	@Operation(summary = "Get shop by ID", description = "Get a shop by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shop found", content = {
+            		@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Shop not found")
+    })
 	@GetMapping("/shops/{id}")
 	public ResponseEntity<ShopDTO> getShopById(@PathVariable Long id) {
 		Optional<Shop> shopOptional = shopRepository.findById(id);
@@ -60,6 +79,11 @@ public class ShopController {
 
 	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la
 	// respuesta completa
+	@Operation(summary = "Check if shop exists", description = "Check if a shop exists by ID without retrieving full response body")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shop found"),
+            @ApiResponse(responseCode = "404", description = "Shop not found")
+    })
 	@RequestMapping(value = "/shops/{id}", method = RequestMethod.HEAD)
 	public ResponseEntity<Void> getShopMetadata(@PathVariable Long id) {
 		if (shopRepository.existsById(id)) {
@@ -73,8 +97,16 @@ public class ShopController {
 
 	// -------------- Métodos peticiones Insertar --------------//
 
+	@Operation(summary = "Create a new shop", description = "Create a new shop")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Shop created"),
+            @ApiResponse(responseCode = "400", description = "Invalid shop data provided")
+    })
 	@PostMapping("/shops")
 	public ResponseEntity<ShopDTO> createShop(@RequestBody ShopDTO shopDTO) {
+		if (shopDTO == null) {
+            throw new ValidationException("Invalid shop data provided");
+        }
 		Shop shop = ShopConvertTo.convertToEntity(shopDTO);
 		Shop savedShop = shopRepository.save(shop);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ShopConvertTo.convertToDTO(savedShop));
@@ -84,6 +116,11 @@ public class ShopController {
 	
 	// -------------- Petición modificación total tienda --------------//
 
+	@Operation(summary = "Update shop by ID", description = "Update an existing shop by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shop updated"),
+            @ApiResponse(responseCode = "404", description = "Shop not found")
+    })
 	@PutMapping("/shops/{id}")
 	public ResponseEntity<ShopDTO> updateShop(@PathVariable Long id, @RequestBody ShopDTO updatedShopDTO) {
 		Optional<Shop> shopOptional = shopRepository.findById(id);
@@ -96,6 +133,11 @@ public class ShopController {
 	
 	// -------------- Petición modificación de atributo tienda --------------//
 	
+	@Operation(summary = "Update shop name by ID", description = "Update the name of an existing shop by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shop name updated"),
+            @ApiResponse(responseCode = "404", description = "Shop not found")
+    })
 	// Método para actualizar solo el nombre de una tienda
 		@PatchMapping("/shops/{id}/updateName")
 		public ResponseEntity<ShopDTO> updateShopName(@PathVariable Long id, @RequestBody String newName) {
@@ -111,6 +153,11 @@ public class ShopController {
 
 	// -------------- Métodos peticiones Borrar --------------//
 
+	@Operation(summary = "Delete shop by ID", description = "Delete a shop by its ID")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Shop deleted"),
+            @ApiResponse(responseCode = "404", description = "Shop not found")
+    })
 	@DeleteMapping("/shops/{id}")
 	public ResponseEntity<Void> deleteShop(@PathVariable Long id) {
 		if (shopRepository.existsById(id)) {

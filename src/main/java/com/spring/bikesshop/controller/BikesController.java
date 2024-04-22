@@ -52,6 +52,9 @@ public class BikesController {
 	@GetMapping("/bikes")
 	public ResponseEntity<List<BikeDTO>> getAllBikes() {
 		List<Bike> bikes = bikeRepository.findAll();
+		if (bikes.isEmpty()) {
+            throw new ResourceNotFoundException("No bikes found");
+        }
 		List<BikeDTO> bikeDTOs = bikes.stream().map(this::convertToDTO).collect(Collectors.toList());
 		return ResponseEntity.ok(bikeDTOs);
 	}

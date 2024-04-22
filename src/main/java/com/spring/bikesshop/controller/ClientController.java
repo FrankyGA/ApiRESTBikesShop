@@ -3,6 +3,7 @@ package com.spring.bikesshop.controller;
 import com.spring.bikesshop.converter.ClientConvertTo;
 import com.spring.bikesshop.dto.ClientDTO;
 import com.spring.bikesshop.exceptions.ResourceNotFoundException;
+import com.spring.bikesshop.exceptions.ValidationException;
 import com.spring.bikesshop.model.Client;
 import com.spring.bikesshop.repository.ClientRepository;
 
@@ -48,6 +49,9 @@ public class ClientController {
 	@GetMapping("/clients")
 	public ResponseEntity<List<ClientDTO>> getAllClients() {
 		List<Client> clients = clientRepository.findAll();
+		if (clients.isEmpty()) {
+            throw new ResourceNotFoundException("No clients found");
+        }
 		return ResponseEntity.ok(ClientConvertTo.convertToDTOList(clients));
 	}
 
@@ -89,7 +93,6 @@ public class ClientController {
 
 	// -------------- Métodos peticiones Insertar --------------//
 	
-
 	// Petición para insertar nuevo cliente
 	@Operation(summary = "Create a new client", description = "Create a new client")
 	@ApiResponses(value = {
@@ -98,6 +101,9 @@ public class ClientController {
     })
 	@PostMapping("/clients")
 	public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
+		if (clientDTO == null) {
+            throw new ValidationException("Invalid client data provided");
+        }
 		Client client = ClientConvertTo.convertToEntity(clientDTO);
 		Client savedClient = clientRepository.save(client);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ClientConvertTo.convertToDTO(savedClient));
