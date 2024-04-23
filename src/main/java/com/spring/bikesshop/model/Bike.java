@@ -2,6 +2,7 @@ package com.spring.bikesshop.model;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,17 +12,19 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-
 @Entity @Data
 public class Bike {
 	
 	@Id
 	@GeneratedValue
+	@Schema(example = "1", description = "ID for bike")
 	private Long id;
 	@NotNull(message = "Name is required")
     @Size(min = 3, message = "Title must be at least 3 characters long")
+	@Schema(example = "B2", description = "Name for bike")
 	private String name;
 	@NotNull(message = "Brand is required")
+	@Schema(example = "Mountbike", description = "Brand for bike")
 	private String brand;
 	
 	@ManyToOne

@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@Tag(name = "Shop", description = "Shop controller with CRUD Operations")
 public class ShopController {
 
 	private final ShopRepository shopRepository;
