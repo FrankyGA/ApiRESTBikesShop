@@ -61,7 +61,7 @@ public class ClientController {
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client found", content = {
             		@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "404", description = "Client not found")
+            @ApiResponse(responseCode = "404", description = "Client not found with id: ...")
     })
 	@GetMapping("/clients/{id}")
 	public ResponseEntity<ClientDTO> getClientById(@PathVariable Long id) {
@@ -117,7 +117,7 @@ public class ClientController {
 	@Operation(summary = "Update client by ID", description = "Update an existing client by its ID")
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client updated"),
-            @ApiResponse(responseCode = "404", description = "Client not found")
+            @ApiResponse(responseCode = "404", description = "Client not found with id: ...")
     })
 	@PutMapping("/clients/{id}")
 	public ResponseEntity<ClientDTO> updateClient(@PathVariable Long id, @RequestBody ClientDTO updatedClientDTO) {
@@ -141,7 +141,7 @@ public class ClientController {
 	@Operation(summary = "Update client name by ID", description = "Update the name of an existing client by its ID")
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client name updated"),
-            @ApiResponse(responseCode = "404", description = "Client not found")
+            @ApiResponse(responseCode = "404", description = "Client not found with id: ...")
     })
 	@PatchMapping("/clients/{id}/updateName")
 	public ResponseEntity<ClientDTO> updateClientName(@PathVariable Long id, @RequestBody String newName) {
@@ -161,7 +161,7 @@ public class ClientController {
 	@Operation(summary = "Delete client by ID", description = "Delete a client by its ID")
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Client deleted"),
-            @ApiResponse(responseCode = "404", description = "Client not found")
+            @ApiResponse(responseCode = "404", description = "Client not found with id: ...")
     })
 	@DeleteMapping("/clients/{id}")
 	public ResponseEntity<Void> deleteClient(@PathVariable Long id) {

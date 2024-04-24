@@ -1,13 +1,9 @@
 package com.spring.bikesshop.controller;
 
-import com.spring.bikesshop.converter.BikeConvertTo;
 import com.spring.bikesshop.converter.ShopConvertTo;
-import com.spring.bikesshop.dto.BikeDTO;
 import com.spring.bikesshop.dto.ShopDTO;
 import com.spring.bikesshop.exceptions.ResourceNotFoundException;
 import com.spring.bikesshop.exceptions.ValidationException;
-import com.spring.bikesshop.model.Bike;
-import com.spring.bikesshop.model.Client;
 import com.spring.bikesshop.model.Shop;
 import com.spring.bikesshop.repository.ShopRepository;
 
@@ -67,7 +63,7 @@ public class ShopController {
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Shop found", content = {
             		@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "404", description = "Shop not found")
+            @ApiResponse(responseCode = "404", description = "Shop not found with id: ...")
     })
 	@GetMapping("/shops/{id}")
 	public ResponseEntity<ShopDTO> getShopById(@PathVariable Long id) {
@@ -120,7 +116,7 @@ public class ShopController {
 	@Operation(summary = "Update shop by ID", description = "Update an existing shop by its ID")
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Shop updated"),
-            @ApiResponse(responseCode = "404", description = "Shop not found")
+            @ApiResponse(responseCode = "404", description = "Shop not found with id: ...")
     })
 	@PutMapping("/shops/{id}")
 	public ResponseEntity<ShopDTO> updateShop(@PathVariable Long id, @RequestBody ShopDTO updatedShopDTO) {
@@ -157,7 +153,7 @@ public class ShopController {
 	@Operation(summary = "Delete shop by ID", description = "Delete a shop by its ID")
 	@ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Shop deleted"),
-            @ApiResponse(responseCode = "404", description = "Shop not found")
+            @ApiResponse(responseCode = "404", description = "Shop not found with id: ...")
     })
 	@DeleteMapping("/shops/{id}")
 	public ResponseEntity<Void> deleteShop(@PathVariable Long id) {

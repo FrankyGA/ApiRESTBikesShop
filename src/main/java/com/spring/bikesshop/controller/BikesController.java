@@ -68,7 +68,7 @@ public class BikesController {
             @ApiResponse(responseCode = "200", description = "Bike found", content = {
                     @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", description = "Bike not found")
+            @ApiResponse(responseCode = "404", description = "Bike not found with id: ...")
     })
 	@GetMapping("/bikes/{id}")
 	public ResponseEntity<BikeDTO> getBikeById(@PathVariable Long id) {
@@ -144,7 +144,7 @@ public class BikesController {
             @ApiResponse(responseCode = "200", description = "Bike updated", content = {
                     @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", description = "Bike not found or shop not found")
+            @ApiResponse(responseCode = "404", description = "Bike not found or shop not found with id: ...")
     })
 	@PutMapping("/bikes/{id}")
 	public ResponseEntity<BikeDTO> updateBike(@PathVariable Long id, @RequestBody BikeDTO updatedBikeDTO) {
@@ -172,7 +172,7 @@ public class BikesController {
             @ApiResponse(responseCode = "200", description = "Bike name updated", content = {
                     @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
             }),
-            @ApiResponse(responseCode = "404", description = "Bike not found")
+            @ApiResponse(responseCode = "404", description = "Bike not found with id: ...")
     })
 	// Método para actualizar solo el nombre de una bici
 	@PatchMapping("/bikes/{id}/updateName")
@@ -192,7 +192,7 @@ public class BikesController {
 	@Operation(summary = "Delete bike by ID", description = "Delete a bike by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Bike deleted"),
-            @ApiResponse(responseCode = "404", description = "Bike not found")
+            @ApiResponse(responseCode = "404", description = "Bike not found with id: ...")
     })
 	@DeleteMapping("/bikes/{id}")
 	public ResponseEntity<Void> deleteBike(@PathVariable Long id) {

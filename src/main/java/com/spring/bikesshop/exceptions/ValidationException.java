@@ -8,8 +8,16 @@ import org.springframework.http.HttpStatus;
 public class ValidationException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
+	
+	private final HttpStatus httpStatus;
 
 	public ValidationException(String message) {
         super(message);
+        this.httpStatus = HttpStatus.BAD_REQUEST;
+    }
+	
+	// Método para devolver estado
+	public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 }
