@@ -2,17 +2,18 @@ package com.spring.bikesshop.exceptions;
 
 //Clase para representar la respuesta de error
 public class ErrorResponse {
-    private String message;
-    private int statusCode;
-    private String errorType;
+	private String message;
+	private int statusCode;
+	private String errorType;
 
-    public ErrorResponse() {}
-    		
-    public ErrorResponse(String message, int statusCode, String errorType) {
-        this.message = message;
-        this.statusCode = statusCode;
-        this.errorType = errorType;
-    }
+	public ErrorResponse() {
+	}
+
+	public ErrorResponse(String message, int statusCode, String errorType) {
+		this.message = message;
+		this.statusCode = statusCode;
+		this.errorType = errorType;
+	}
 
 	public String getMessage() {
 		return message;
