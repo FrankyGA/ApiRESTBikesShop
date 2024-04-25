@@ -38,13 +38,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getHttpStatus()).body(errorResponse);
     }
     
-    @ExceptionHandler(ForbiddenException.class)
+    @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getHttpStatus().value(), "Request conflicts error");
         return ResponseEntity.status(ex.getHttpStatus()).body(errorResponse);
     }
     
-    @ExceptionHandler(ForbiddenException.class)
+    @ExceptionHandler(UnsupportedOperationException.class)
     public ResponseEntity<ErrorResponse> handleUnsupportedOperationException(UnsupportedOperationException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getHttpStatus().value(), "Unsupported operation error");
         return ResponseEntity.status(ex.getHttpStatus()).body(errorResponse);
