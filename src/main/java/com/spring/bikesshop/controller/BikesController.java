@@ -98,7 +98,7 @@ public class BikesController {
 		}
 	}
 
-	// -------------- Métodos peticiones Insertar --------------//
+	// -------------- Métodos peticiones Insertar POST--------------//
 	
 	@Operation(summary = "Create a new bike", description = "Create a new bike")
     @ApiResponses(value = {
@@ -151,6 +151,7 @@ public class BikesController {
 		// Buscar la bicicleta por ID
 		Optional<Bike> bikeOptional = bikeRepository.findById(id);
 		Bike bike = bikeOptional.orElseThrow(() -> new ResourceNotFoundException("Bike not found with id: " + id));
+		
 		// Buscar la tienda por nombre (de la bicicleta actualizada)
 		Shop shop = shopRepository.findByName(updatedBikeDTO.getShop()).orElseThrow(
 				() -> new ResourceNotFoundException("Shop not found with name: " + updatedBikeDTO.getShop()));
