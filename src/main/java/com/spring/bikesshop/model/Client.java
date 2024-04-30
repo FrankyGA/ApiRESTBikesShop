@@ -5,16 +5,19 @@ import java.util.Objects;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
-@Entity @Data
+@Schema(name = "Clients", description = "Clients")
+@Entity
+@Table(name = "clients")
 public class Client {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Schema(example = "1", description = "ID for client")
 	private Long id;
 	@NotNull(message = "Name is required")
@@ -55,8 +58,9 @@ public class Client {
 		return address;
 	}
 
-	public void setAdress(String address) {
+	public void setAddress(String address) {
 		this.address = address;
+		
 	}
 
 	public String getAge() {
@@ -89,4 +93,6 @@ public class Client {
 	public String toString() {
 		return "Client [id=" + id + ", name=" + name + ", address=" + address + ", age=" + age + "]";
 	}
+
+	
 }

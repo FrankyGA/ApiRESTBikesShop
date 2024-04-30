@@ -50,9 +50,12 @@ public class RentalController {
 		this.shopRepository = shopRepository;
 	}
 
+	// -------------- Métodos peticiones Consultar --------------//
+
+	// -------------- Petición todos los alquileres --------------//
 	@Operation(summary = "Get all rentals", description = "Get a list of all rentals")
 	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Rentals found", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RentalDTO.class)))),
+			@ApiResponse(responseCode = "200", description = "Rentals found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class))),
 			@ApiResponse(responseCode = "404", description = "No rentals found") })
 	@GetMapping("/rentals")
 	public ResponseEntity<List<RentalDTO>> getAllRentals() {
@@ -63,6 +66,12 @@ public class RentalController {
 		return ResponseEntity.ok(rentals.stream().map(RentalConvertTo::convertToDTO).collect(Collectors.toList()));
 	}
 
+	// -------------- Petición alquiler por ID --------------//
+
+	@Operation(summary = "Get rental fo ID", description = "Get a rental for ID")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Rental found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class))),
+			@ApiResponse(responseCode = "404", description = "No rentals found") })
 	@GetMapping("/rentals/{id}")
 	public ResponseEntity<RentalDTO> getRentalById(@PathVariable Long id) {
 		Optional<Rental> rentalOptional = rentalRepository.findById(id);
@@ -71,6 +80,13 @@ public class RentalController {
 		return ResponseEntity.ok(RentalConvertTo.convertToDTO(rental));
 	}
 
+	// -------------- Métodos peticiones Insertar POST--------------//
+
+	@Operation(summary = "Create a new rental", description = "Create a new rental")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "Rental created", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class)) }),
+			@ApiResponse(responseCode = "404", description = "Not found") })
 	@PostMapping("/rentals")
 	public ResponseEntity<RentalDTO> createRental(@Valid @RequestBody RentalDTO rentalDTO) {
 		if (rentalDTO == null || rentalDTO.getStartDate() == null || rentalDTO.getEndDate() == null) {
@@ -95,6 +111,13 @@ public class RentalController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(RentalConvertTo.convertToDTO(savedRental));
 	}
 
+	// -------------- Petición modificación alquiler --------------//
+
+	@Operation(summary = "Update an existing rental", description = "Update an existing rental")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Rental updated", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class)) }),
+			@ApiResponse(responseCode = "404", description = "Rental not found") })
 	@PutMapping("/rentals/{id}")
 	public ResponseEntity<RentalDTO> updateRental(@PathVariable Long id,
 			@Valid @RequestBody RentalDTO updatedRentalDTO) {
@@ -143,6 +166,13 @@ public class RentalController {
 		return ResponseEntity.ok(RentalConvertTo.convertToDTO(updatedRental));
 	}
 
+	// -------------- Métodos peticiones Borrar --------------//
+	
+	@Operation(summary = "Delete an existing rental by ID", description = "Delete an existing rental by ID")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "204", description = "Rental deleted", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class)) }),
+			@ApiResponse(responseCode = "404", description = "Rental not found") })
 	@DeleteMapping("/rentals/{id}")
 	public ResponseEntity<Void> deleteRental(@PathVariable Long id) {
 		if (rentalRepository.existsById(id)) {

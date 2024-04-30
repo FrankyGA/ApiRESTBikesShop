@@ -45,7 +45,7 @@ public class BikesController {
 	@Operation(summary = "Get all bikes", description = "Get a list of all bikes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Bikes found", content = {
-                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Bike.class))
             }),
             @ApiResponse(responseCode = "404", description = "No bikes found")
     })
@@ -66,7 +66,7 @@ public class BikesController {
 	@Operation(summary = "Get bike by ID", description = "Get a bike by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Bike found", content = {
-                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Bike.class))
             }),
             @ApiResponse(responseCode = "404", description = "Bike not found with id: ...")
     })
@@ -81,10 +81,12 @@ public class BikesController {
 	// -------------- Petición HEAD --------------//
 	
 	@Operation(summary = "Check if bike exists", description = "Check if a bike exists by ID without retrieving full response body")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Bike found"),
-            @ApiResponse(responseCode = "404", description = "Bike not found")
-    })
+	@ApiResponses(value = {
+	        @ApiResponse(responseCode = "200", description = "Bike found", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = Bike.class))
+	        }),
+	        @ApiResponse(responseCode = "404", description = "Bike not found")
+	})
 	// Método para obtener metadatos de un recurso sin recuperar el cuerpo de la
 	// respuesta completa
 	@RequestMapping(value = "/bikes/{id}", method = RequestMethod.HEAD)
@@ -103,7 +105,7 @@ public class BikesController {
 	@Operation(summary = "Create a new bike", description = "Create a new bike")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Bike created", content = {
-                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Bike.class))
             }),
             @ApiResponse(responseCode = "404", description = "Shop not found")
     })
@@ -113,7 +115,7 @@ public class BikesController {
 		Shop shop = shopRepository.findByName(bikeDTO.getShop())
 				.orElseThrow(() -> new ResourceNotFoundException("Shop not found with name: " + bikeDTO.getShop()));
 		// Crear una nueva bicicleta con los datos del post
-		Bike bike = new Bike(bikeDTO.getName(), bikeDTO.getBrand(), shop);
+		Bike bike = new Bike(null, bikeDTO.getName(), bikeDTO.getBrand(), shop);
 		// Guardar la bicicleta en la base de datos
 		Bike savedBike = bikeRepository.save(bike);
 		// Convertir la bicicleta guardada a DTO
@@ -142,7 +144,7 @@ public class BikesController {
 	@Operation(summary = "Update bike by ID", description = "Update an existing bike by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Bike updated", content = {
-                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Bike.class))
             }),
             @ApiResponse(responseCode = "404", description = "Bike not found or shop not found with id: ...")
     })
@@ -171,7 +173,7 @@ public class BikesController {
 	@Operation(summary = "Update bike name by ID", description = "Update the name of an existing bike by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Bike name updated", content = {
-                    @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json")
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Bike.class))
             }),
             @ApiResponse(responseCode = "404", description = "Bike not found with id: ...")
     })

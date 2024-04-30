@@ -10,7 +10,6 @@ public class CatalogDTO {
     public CatalogDTO() {}
 
 	public CatalogDTO(Long id, String name, String description, String pdfUrl) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;

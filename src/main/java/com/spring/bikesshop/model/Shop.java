@@ -5,16 +5,19 @@ import java.util.Objects;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
-@Entity @Data
+@Schema(name = "Shops", description = "Shops")
+@Entity
+@Table(name = "shops")
 public class Shop {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Schema(example = "1", description = "ID for shop")
 	private Long id;
 	@NotNull(message = "Name is required")
@@ -52,8 +55,9 @@ public class Shop {
 		return address;
 	}
 
-	public void setAdress(String address) {
+	public void setAddress(String address) {
 		this.address = address;
+		
 	}
 
 	@Override
@@ -77,4 +81,6 @@ public class Shop {
 	public String toString() {
 		return "Shop [id=" + id + ", name=" + name + ", address=" + address + "]";
 	}
+
+	
 }

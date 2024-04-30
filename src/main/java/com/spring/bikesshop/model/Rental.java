@@ -8,29 +8,33 @@ import org.springframework.format.annotation.DateTimeFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+@Schema(name = "Rental bikes", description = "Rental bikes for clients")
 @Entity
+@Table(name = "rentals")
 public class Rental {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(example = "1", description = "ID for rental")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "idClient")
     private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "bike_id")
+    @JoinColumn(name = "idBike")
     private Bike bike;
 
     @ManyToOne
-    @JoinColumn(name = "shop_id")
+    @JoinColumn(name = "idShop")
     private Shop shop;
 
     @NotNull
@@ -48,7 +52,6 @@ public class Rental {
 
 	public Rental(Long id, Client client, Bike bike, Shop shop, @NotNull Date startDate, @NotNull Date endDate,
 			Double price) {
-		super();
 		this.id = id;
 		this.client = client;
 		this.bike = bike;
