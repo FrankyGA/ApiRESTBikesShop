@@ -88,7 +88,7 @@ public class RentalController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class)) }),
 			@ApiResponse(responseCode = "404", description = "Not found") })
 	@PostMapping("/rentals")
-	public ResponseEntity<RentalDTO> createRental(@Valid @RequestBody RentalDTO rentalDTO) {
+	public ResponseEntity<RentalDTO> createRental(@RequestBody RentalDTO rentalDTO) {
 		if (rentalDTO == null || rentalDTO.getStartDate() == null || rentalDTO.getEndDate() == null) {
 			throw new ValidationException("Invalid rental data provided");
 		}

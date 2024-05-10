@@ -10,7 +10,7 @@ public class RentalConvertTo {
 
     public static RentalDTO convertToDTO(Rental rental) {
         RentalDTO rentalDTO = new RentalDTO();
-        rentalDTO.setId(rental.getId());
+        rentalDTO.setId(rental.getIdRental());
         rentalDTO.setClient(rental.getClient().getName());
         rentalDTO.setBike(rental.getBike().getId());
         rentalDTO.setShop(rental.getShop().getName());
